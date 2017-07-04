@@ -1,8 +1,10 @@
 var canvas;
+var input_fps;
 var ctx;
 var gameLoopControl = 0;
 var map = {};
 var isMouseDown = false;
+var fps = 15;
 
 function eventMouseUp(e) {
     var x;
@@ -62,7 +64,7 @@ function eventKeyDown(e) {
 	    gameLoopControl = 0;
 		draw();
 	} else {
-	    gameLoopControl = setInterval(gameLoop, 1000/15);
+	    gameLoopControl = setInterval(gameLoop, 1000/fps);
 	}
 	break;
     default:break;
@@ -129,6 +131,13 @@ function randInt(min, max) {
 }
 
 function main() {
+    input_fps = document.getElementById("id_input_fps");
+	input_fps.value = fps;
+	input_fps.addEventListener('input', function(e) {
+		fps = input_fps.value;
+	    clearInterval(gameLoopControl);
+		gameLoopControl = 0;
+	});	
     document.addEventListener('keyup', eventKeyUp, true);
     document.addEventListener('keydown', eventKeyDown, true);
     canvas = document.getElementById("canvas");
