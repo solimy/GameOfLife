@@ -1,5 +1,6 @@
 var canvas;
 var input_fps;
+var display_fps;
 var ctx;
 var gameLoopControl = 0;
 var map = {};
@@ -59,7 +60,7 @@ function eventKeyDown(e) {
     var keycode = ('which' in e) ? e.which : e.keyCode;
     switch (keycode) {
     case 32:
-	if (gameLoopControl != 0) {
+	if (gameLoopControl != 0 || fps == 0) {
 	    clearInterval(gameLoopControl);
 	    gameLoopControl = 0;
 		draw();
@@ -131,12 +132,18 @@ function randInt(min, max) {
 }
 
 function main() {
-    input_fps = document.getElementById("id_input_fps");
+    input_fps = document.getElementById("id_input_range_fps");
 	input_fps.value = fps;
+	display_fps = document.getElementById("id_display_fps");
+	display_fps.innerHTML = input_fps.value;
 	input_fps.addEventListener('input', function(e) {
 		fps = input_fps.value;
+		display_fps.innerHTML = input_fps.value;
 	    clearInterval(gameLoopControl);
-		gameLoopControl = 0;
+		if (fps == 0)
+			gameLoopControl = 0;
+		else
+	    	gameLoopControl = setInterval(gameLoop, 1000/fps);
 	});	
     document.addEventListener('keyup', eventKeyUp, true);
     document.addEventListener('keydown', eventKeyDown, true);
