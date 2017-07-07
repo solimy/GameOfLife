@@ -6,6 +6,8 @@ var gameLoopControl = 0;
 var map = {};
 var isMouseDown = false;
 var fps = 15;
+var cellSize = 10;
+var cellImage;
 
 function eventMouseUp(e) {
     var x;
@@ -20,7 +22,7 @@ function eventMouseUp(e) {
     x -= canvas.offsetLeft;
     y -= canvas.offsetTop;
 
-    map.board[Math.floor(y/10)][Math.floor(x/10)] ^= 1;
+    map.board[Math.floor(y/cellSize)][Math.floor(x/cellSize)] ^= 1;
     draw();
 	isMouseDown = false;
 }
@@ -39,7 +41,7 @@ function eventMouseMove(e) {
     	x -= canvas.offsetLeft;
     	y -= canvas.offsetTop;
 	
-    	map.board[Math.floor(y/10)][Math.floor(x/10)] = 1;
+    	map.board[Math.floor(y/cellSize)][Math.floor(x/cellSize)] = 1;
     	draw();
 	}	
 }
@@ -80,10 +82,10 @@ function draw() {
 	x = -1;
 	while (++x < map.width) {
 	    if (map.board[y][x]==0)
-		ctx.fillStyle = "rgb(0, 0, " + (55 + randInt(0, 200)) + ")";
+		ctx.fillStyle = "rgb(0, 0, " + (205 + randInt(0, 50)) + ")";
 	    else
-		ctx.fillStyle = "rgb(0, " + (205 + randInt(0, 50)) + ", 0)";
-	    ctx.fillRect (x*10, y*10, 10, 10);
+		ctx.fillStyle = "rgb(0, " + (55 + randInt(0, 200)) + ", 0)";
+	    ctx.fillRect (x*cellSize, y*cellSize, cellSize, cellSize);
 	}
     }
 }
@@ -152,9 +154,8 @@ function main() {
     canvas.addEventListener('mousedown', eventMouseDown);
     canvas.addEventListener('mousemove', eventMouseMove);
     ctx = canvas.getContext("2d");
-    
-    map.width = canvas.width / 10;
-    map.height = canvas.height / 10;
+    map.width = canvas.width / cellSize;
+    map.height = canvas.height / cellSize;
     map.board = [];
     map.board2 = [];
     for (var y = 0; y < map.height; ++y) {
