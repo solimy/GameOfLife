@@ -103,19 +103,45 @@
     )
   )
 
-(defun main (width height)
-  (let ((gameData (make-SGameData
-		   :width width
-		   :height height
-		   :board (make-array (list height width))
-		   :neighbours (make-array (list height width)))))
-    (format t "~C[2J~C[0;0f~C[s" #\Esc #\Esc #\Esc)
-    (boardInit (SGameData-board gameData) (SGameData-width gameData) (SGameData-height gameData))
-    (loop
-      (neighboursInit gameData)
-      (boardProcess gameData)
-      (display gameData)
+(defun main ()
+  (let ((args
+	 (or 
+	  #+CLISP *args*
+	  #+SBCL *posix-argv*  
+	  #+LISPWORKS system:*line-arguments-list*
+	  #+CMU extensions:*command-line-words*
+	  nil))
+	(width)
+	(height)
+	(frameduration))
+    (if (or
+	 (not args)
+	 (/= (length args) 4)
+	 )
+	(cons
+	 (format t "args needed: width height fps")
+	 (quit)
+	 )
+	)
+    (setq width (parse-integer (nth 1 args)))
+    (setq height (parse-integer (nth 2 args)))
+    (setq frameduration (/ 1 (parse-integer (nth 3 args))))
+    (let ((gameData (make-SGameData
+		     :width width
+		     :height height
+		     :board (make-array (list height width))
+		     :neighbours (make-array (list height width))))
+	  (startTime))
+      (format t "~C[2J~C[0;0f~C[s" #\Esc #\Esc #\Esc)
+      (boardInit (SGameData-board gameData) (SGameData-width gameData) (SGameData-height gameData))
+      (loop
+       (setq startTime (/ (get-internal-real-time) internal-time-units-per-second))
+       (neighboursInit gameData)
+       (boardProcess gameData)
+       (display gameData)
+       (sleep (- frameduration (- (/ (get-internal-real-time) internal-time-units-per-second) startTime)))
+       )
       )
     )
   )
-(main 80 40)
+(main)
