@@ -1,3 +1,5 @@
+(setf *random-state* (make-random-state t))
+
 (defstruct SGameData
   width
   height
