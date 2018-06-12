@@ -139,7 +139,7 @@
        (neighboursInit gameData)
        (boardProcess gameData)
        (display gameData)
-       (sleep (- frameduration (- (/ (get-internal-real-time) internal-time-units-per-second) startTime)))
+       (sleep (max 0 (- frameduration (- (/ (get-internal-real-time) internal-time-units-per-second) startTime))))
        )
       )
     )
